@@ -1,0 +1,5 @@
+.vscode
+lrslib*
+*.mex*64
+*.o
+*.a

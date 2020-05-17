@@ -17,6 +17,7 @@ private:
     mpz_t *_data;
 
     friend std::ostream& operator<<(std::ostream&, const mpz&);
+    friend mpz abs(const mpz&);
 public:
     ~mpz();
 
@@ -46,4 +47,6 @@ public:
     const mpz_ptr get_mpz_t(void) const;
 
     size_t strlength(void) const;
+
+    mpz& operator-(void);
 };

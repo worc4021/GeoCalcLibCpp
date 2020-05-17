@@ -15,15 +15,39 @@ RowXq classify(size_t nCols, const lrs_mp_vector output) {
             retVal(i) = qType(zType(output[i]),norm);
     } else {
         // handle hyperplanes with negative sign
-        qType signOfValue = (mpz_cmp_si(output[0],0L)+1) ? 1: -1;
-        zType out0(output[0]);
-        for (auto i = 0; i<retVal.cols(); i++)
-            retVal(i) = signOfValue * qType(zType(output[i]), out0);
+        retVal(0) = qType((mpz_cmp_si(output[0],0L)+1) ? 1: -1);
+        zType normaliser = abs(zType(output[0]));
+        for (auto i = 1; i < nCols; i++) {
+            retVal(i) = qType(zType(output[i]), normaliser);
+        }
     }
 
     return retVal;
 }
 
+RowXq classifyForHalfspaceRep(size_t nCols, const lrs_mp_vector output) {
+    RowXq retVal(nCols);
+    if (zero(output[0])) {
+        // ray 
+        RowXz ray(nCols);
+        for (auto i = 0; i < ray.cols(); i++)
+            ray(i) = zType(output[i]);
+
+        zType norm = -ray.squaredNorm();
+
+        for (auto i = 0; i < retVal.cols(); i++)
+            retVal(i) = qType(zType(output[i]),norm);
+    } else {
+        // handle hyperplanes with negative sign
+        retVal(0) = qType((mpz_cmp_si(output[0],0L)+1) ? 1: -1);
+        zType normaliser = -abs(zType(output[0]));
+        for (auto i = 1; i < nCols; i++) {
+            retVal(i) = qType(zType(output[i]), normaliser);
+        }
+    }
+
+    return retVal;
+}
 
 void declassify(const RowXq& row, lrs_mp_vector num, lrs_mp_vector den) {
     for (auto i = 0; i < row.cols(); i++) {
@@ -32,6 +56,22 @@ void declassify(const RowXq& row, lrs_mp_vector num, lrs_mp_vector den) {
         mpz_set(den[i], row(i).get_den_mpz_t());
     }
 }
+
+/*
+    In LRS polyhedra are given as bl+Al*x>=0 hence the regular A*x<=b has to be transformed 
+    by Al = -A.
+*/
+void declassifyForFacetEnumeration(const RowXq& row, lrs_mp_vector num, lrs_mp_vector den) {
+    qType curVal;
+    mpz_set(num[0], row(0).get_num_mpz_t());
+    mpz_set(den[0], row(0).get_den_mpz_t());
+    for (auto i = 1; i < row.cols(); i++) {
+        curVal = -row(i);
+        mpz_set(num[i], curVal.get_num_mpz_t());
+        mpz_set(den[i], curVal.get_den_mpz_t());
+    }
+}
+
 
 void Polytope::vertexEnumerate(void) {
     assert(inHrep);
@@ -65,12 +105,12 @@ void Polytope::vertexEnumerate(void) {
     
     
     for (auto i = 1; i <= HrepIneq.rows(); ++i){
-        declassify(HrepIneq.row(i-1), num, den);
+        declassifyForFacetEnumeration(HrepIneq.row(i-1), num, den);
         lrs_set_row_mp(Pv,Qv,i,num,den,GE);
     }
 
     for (auto i = 1; i <= HrepEq.rows(); ++i){
-        declassify(HrepIneq.row(i-1), num, den);
+        declassifyForFacetEnumeration(HrepIneq.row(i-1), num, den);
         lrs_set_row_mp(Pv,Qv,i+HrepIneq.rows()-1,num,den,EQ);
     }
 
@@ -177,7 +217,7 @@ void Polytope::facetEnumerate(void) {
         {
         for (auto col = 0; col <= P->d; col++)
             if (lrs_getsolution (P, Q, output, col))
-                buffer.push_back(classify(VrepV.cols(), output));
+                buffer.push_back(classifyForHalfspaceRep(VrepV.cols(), output));
         }
         while (lrs_getnextbasis (&P, Q, FALSE));
     }

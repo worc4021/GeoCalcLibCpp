@@ -110,8 +110,9 @@ mpz_ptr mpz::get_mpz_t(void) {
 }
 
 size_t mpz::strlength(void) const {
-    return mpz_sizeinbase(_data[0], 10);
+    return mpz_sizeinbase(_data[0], 10)+2;
 }
+
 
 std::ostream& operator<<(std::ostream &strm, const mpz &a) {
     auto length = a.strlength();
@@ -124,4 +125,19 @@ std::ostream& operator<<(std::ostream &strm, const mpz &a) {
     delete[] buffer;
 
     return strm << sbuffer;
+}
+
+mpz& mpz::operator-(void) {
+    mpz_t tmp;
+    mpz_init(tmp);
+    mpz_neg(tmp, _data[0]);
+    mpz_swap(tmp, _data[0]);
+    mpz_clear(tmp);
+    return *this;
+}
+
+mpz abs(const mpz& x) {
+    mpz retVal;
+    mpz_abs(retVal._data[0],x._data[0]);
+    return retVal;
 }

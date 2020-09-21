@@ -56,5 +56,5 @@ function make(ownGmpClass)
     end
     
     delete('*.o');
-    
+    movefile(['*.',mexext()],'/Users/Manuel/Documents/Development/Matlab/+Utilities/+Bin')
 end

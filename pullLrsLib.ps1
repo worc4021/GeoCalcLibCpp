@@ -25,4 +25,8 @@ $baseVersion = [Regex]::match($latestVersion,"\d+").Value
 
 curl --output "lrslib.tar.gz" ($url + "lrslib-" + $latestVersion + ".tar.gz")
 
+Remove-Item ./lrslib -ErrorAction SilentlyContinue -Force -Recurse
+
 tar xvzf ./lrslib.tar.gz
+
+Rename-Item ("lrslib-" + $latestVersion) -NewName lrslib

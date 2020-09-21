@@ -1,6 +1,36 @@
 #include "lrsinterface.hpp"
 #include <iostream>
 
+
+lrs_restart_dat* lrs_alloc_restart()
+{
+  int i;
+
+  lrs_restart_dat *R;
+
+  R = (lrs_restart_dat *) malloc (sizeof (lrs_restart_dat));
+  if (R == NULL)
+    return R;  
+  
+  R->overide=0;     /* do not overide Q */
+  R->restart=0;     /* do not do a restart */
+  R->facet=NULL;    /* this will be allocated later when we know its size */
+  R->d=0;
+  R->maxcobases=0;
+  R->maxdepth=-1;  /* will be set to MAXD in lrs*_main */
+  R->mindepth=0;
+  R->maxcobases=0;
+  for(i=0;i<10;i++)
+    R->count[i]=0;
+  R->depth=0;
+  R->lrs=1;
+  R->redund=0;
+  R->verifyredund=0;
+  R->redineq = NULL;
+
+  return R;
+}
+
 RowXq classify(size_t nCols, const lrs_mp_vector output) {
     RowXq retVal(nCols);
     if (zero(output[0])) {

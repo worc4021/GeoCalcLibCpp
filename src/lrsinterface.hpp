@@ -12,6 +12,7 @@ typedef mpq qType;
 
 extern "C" {
 #include "stdio.h"
+#include "lrsrestart.h"
 #include "lrslib.h"
 }
 

@@ -134,3 +134,7 @@ void mpq::set_num(const mpz& num) {
 void mpq::set_den(const mpz& den) {
     mpq_set_den(_data[0], den.get_mpz_t());
 }
+
+double mpq::getValue(void) const {
+    return mpq_get_d(_data[0]);
+}

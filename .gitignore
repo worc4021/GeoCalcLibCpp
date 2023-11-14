@@ -4,3 +4,4 @@ lrslib*
 *.mex*64
 *.o
 *.a
+build/*

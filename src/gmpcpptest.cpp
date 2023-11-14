@@ -18,15 +18,15 @@ int main(int argc, char const **argv)
 
     Polytope poly;
     std::cout << "Got to " << __LINE__ << " in " << __FILE__ << std::endl;
-    poly.setVrep(fromMatrixXd(Ad));
+    poly.setVertices(fromMatrixXd(Ad));
 
     std::cout << "Got to " << __LINE__ << " in " << __FILE__ << std::endl;
 
-    poly.getHrep();
+    poly.getA();
 
     std::cout << "Got to " << __LINE__ << " in " << __FILE__ << std::endl;
 
-    Eigen::MatrixXd Vmat = fromMatrixXq(poly.getHrep());
+    Eigen::MatrixXd Vmat = fromMatrixXq(poly.getA());
 
     std::cout << "Got to " << __LINE__ << " in " << __FILE__ << std::endl;
 

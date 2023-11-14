@@ -1,8 +1,8 @@
-GMPROOT=/usr/local/Cellar/gmp/6.2.0
+GMPROOT=/usr/local/Cellar/gmp/6.2.1
 GMPCLASS=/Users/Manuel/Documents/Development/GeoCalcLibCpp/GmpCpp
-EIGENROOT=/usr/local/Cellar/eigen/3.3.7/include/eigen3
-LRSROOT=/Users/Manuel/Documents/Development/GeoCalcLibCpp/lrslib-070
-BOOSTROOT=/usr/local/Cellar/boost/1.72.0_2
+EIGENROOT=/usr/local/Cellar/eigen/3.3.8_1/include/eigen3
+LRSROOT=/Users/manuel/Documents/Development/MatlabPublic/GeoCalcLibCpp/lrslib
+BOOSTROOT=/usr/local/Cellar/boost/1.74.0/include
 
 OWNGMP=TRUE
 
@@ -38,11 +38,11 @@ libgmppp.a: ../GmpCpp/mpz.cpp ../GmpCpp/mpq.cpp ../GmpCpp/mpqMatrix.cpp
 liblrsinterface.a: $(OBJ)
 	$(AR) -rcs liblrsinterface.a $(OBJ)
 
-lrsgmp.o: ../lrslib-070/lrsgmp.c
-	$(CC) $(LRSFLAGS) -o lrsgmp.o -c ../lrslib-070/lrsgmp.c 2> lrsgmp.err
+lrsgmp.o: $(LRSROOT)/lrsgmp.c
+	$(CC) $(LRSFLAGS) -o lrsgmp.o -c $(LRSROOT)/lrsgmp.c 2> lrsgmp.err
 
-lrslib.o: ../lrslib-070/lrslib.c
-	$(CC) $(LRSFLAGS) -o lrslib.o -c ../lrslib-070/lrslib.c 2> lrslib.err
+lrslib.o: $(LRSROOT)/lrslib.c
+	$(CC) $(LRSFLAGS) -o lrslib.o -c $(LRSROOT)/lrslib.c 2> lrslib.err
 
 lrsinterface.o: lrsinterface.cpp gmpMatrix.hpp
 	$(CXX) $(CXXFLAGS) -o lrsinterface.o -c lrsinterface.cpp 2> lrsinterface.err

@@ -41,5 +41,7 @@ public:
 
     void set_num(const mpz&);
     void set_den(const mpz&);
+
+    double getValue(void) const;
 };
 

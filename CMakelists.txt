@@ -1,0 +1,22 @@
+cmake_minimum_required(VERSION 3.25)
+project(GeoCalcLib)
+
+include(FindMatlab)
+
+find_library(GMP REQUIRED)
+
+find_package(Matlab REQUIRED)
+
+
+add_library(lrs STATIC 
+            lrslib/lrslib.c
+            lrslib/lrsgmp.c)
+
+matlab_add_mex( NAME facetEnumeration
+                SRC
+                src/lrsinterface.cpp
+                src/mpq.cpp
+                src/mpz.cpp
+                src/mpqMatrix.cpp
+                LINK_TO lrs 
+                R2018a)

@@ -3,11 +3,11 @@ function make(ownGmpClass)
         ownGmpClass (1,1) logical = true;
     end
 
-    IEIGEN = '/usr/local/Cellar/eigen/3.3.8_1/include/eigen3';
+    IEIGEN = '/usr/local/Cellar/eigen/3.3.9/include/eigen3';
     IBUILDINGBLOCKS = '/Users/manuel/Documents/Development/MexBuildingBlocks';
     ILRS = '/Users/manuel/Documents/Development/GeoCalcLibCpp/lrslib';
     IGMP = '/usr/local/Cellar/gmp/6.2.1';
-    BOOSTDIR = '/usr/local/Cellar/boost/1.74.0';
+    BOOSTDIR = '/usr/local/Cellar/boost/1.75.0_1';
 
     obj = ["lrsinterface.cpp","mpq.cpp","mpz.cpp",...
         fullfile(IBUILDINGBLOCKS,'eigenConversion.cpp'),...
@@ -56,5 +56,5 @@ function make(ownGmpClass)
     end
     
     delete('*.o');
-    movefile(['*.',mexext()],'/Users/Manuel/Documents/Development/Matlab/+Utilities/+Bin')
+%     movefile(['*.',mexext()],'/Users/Manuel/Documents/Development/Matlab/+Utilities/+Bin')
 end

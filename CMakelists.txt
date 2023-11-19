@@ -1,22 +1,28 @@
-cmake_minimum_required(VERSION 3.25)
+set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake CACHE STRING "Vcpkg toolchain file")
+cmake_minimum_required(VERSION 3.21)
 project(GeoCalcLib)
 
-include(FindMatlab)
-
-find_library(GMP REQUIRED)
-
 find_package(Matlab REQUIRED)
+find_package(Eigen3 CONFIG REQUIRED)
+find_package(Boost REQUIRED)
+
+add_subdirectory(lrslib)
+add_subdirectory(MexUtilities)
+add_subdirectory(core)
+
+set(TARGETS)
 
 
-add_library(lrs STATIC 
-            lrslib/lrslib.c
-            lrslib/lrsgmp.c)
+matlab_add_mex(
+    NAME facetEnumeration
+    SRC src/facetEnumeration.cpp
+    LINK_TO GeoCalcLib MexUtilities::MexUtilities
+    R2018a
+)
 
-matlab_add_mex( NAME facetEnumeration
-                SRC
-                src/lrsinterface.cpp
-                src/mpq.cpp
-                src/mpz.cpp
-                src/mpqMatrix.cpp
-                LINK_TO lrs 
-                R2018a)
+matlab_add_mex(
+    NAME vertexEnumeration
+    SRC src/vertexEnumeration.cpp
+    LINK_TO GeoCalcLib MexUtilities::MexUtilities
+    R2018a
+)

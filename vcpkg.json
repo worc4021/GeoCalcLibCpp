@@ -4,6 +4,7 @@
         "gmp",
         "eigen3",
         "boost-compute",
-        "fmt"
+        "fmt",
+        "pkgconf"
     ]
 }

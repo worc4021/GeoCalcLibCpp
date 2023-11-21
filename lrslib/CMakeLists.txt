@@ -8,9 +8,17 @@ FetchContent_Declare(
     lrslibsrc
     URL "https://cgm.cs.mcgill.ca/~avis/C/lrslib/archive/lrslib-${LRS_VERSION}.tar.gz"
     DOWNLOAD_EXTRACT_TIMESTAMP true
-)
-
+    )
 FetchContent_MakeAvailable(lrslibsrc)
+
+# Protect against libgen.h being included on Windows. We provide a dummy to obtain basename and dirname. Imagine if windows had a patch command..!
+file(READ ${lrslibsrc_SOURCE_DIR}/lrslib.c CONTENT)
+string(REPLACE "#include <libgen.h>" "#ifndef WIN32\n#include <libgen.h>\n#endif" MODIFIED_CONTENT "${CONTENT}")
+file(WRITE ${lrslibsrc_SOURCE_DIR}/lrslib.c "${MODIFIED_CONTENT}")
+
+file(READ ${lrslibsrc_SOURCE_DIR}/lrsgmp.h CONTENT)
+string(REPLACE "#include <unistd.h>" "#ifdef WIN32\n#include <io.h>\n#else\n#include <libgen.h>\n#endif" MODIFIED_CONTENT "${CONTENT}")
+file(WRITE ${lrslibsrc_SOURCE_DIR}/lrsgmp.h "${MODIFIED_CONTENT}")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gmp REQUIRED IMPORTED_TARGET gmp)

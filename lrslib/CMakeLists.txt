@@ -37,18 +37,7 @@ endif()
 add_library(lrslib 
         ${lrssrc})
 
-if (LRS_BUILD_EXECUTABLE)
-    add_executable(lrsgmp  
-        ${lrslibsrc_SOURCE_DIR}/lrs.c 
-        ${lrslibsrc_SOURCE_DIR}/lrslib.c 
-        ${lrslibsrc_SOURCE_DIR}/lrsgmp.c 
-        ${lrslibsrc_SOURCE_DIR}/lrsdriver.c)
-        
-    target_link_libraries(lrsgmp PRIVATE PUBLIC PkgConfig::gmp)
-    target_compile_definitions(lrsgmp PUBLIC GMP TIMES SIGNALS B64 LRS_QUIET NOINFO DIRECT)
 
-    install(TARGETS lrsgmp DESTINATION bin)
-endif()
 
 set_target_properties(lrslib 
             PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -57,9 +46,15 @@ target_link_libraries(lrslib PUBLIC PkgConfig::gmp)
 target_compile_definitions(lrslib PUBLIC GMP TIMES SIGNALS B64 LRS_QUIET NOINFO DIRECT)
 
 if (WIN32)
-target_compile_definitions(lrslib PRIVATE PATH_MAX=1024 )
-target_compile_definitions(lrslib PUBLIC __STDC__)
+target_compile_definitions(lrslib PUBLIC PATH_MAX=1024 __STDC__)
+endif()
 
+if (LRS_BUILD_EXECUTABLE)
+    add_executable(lrsgmp  
+        ${lrslibsrc_SOURCE_DIR}/lrs.c)
+        
+    target_link_libraries(lrsgmp PUBLIC lrslib)
+    install(TARGETS lrsgmp DESTINATION bin)
 endif()
 
 target_include_directories(lrslib PUBLIC

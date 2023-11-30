@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.24)
 project(lrslib)
 
 set(LRS_VERSION "072" CACHE STRING "LRS version")
+option(LRS_BUILD_EXECUTABLE "Build the lrs executable" ON)
 
 include(FetchContent)
 FetchContent_Declare(
@@ -35,6 +36,19 @@ endif()
 
 add_library(lrslib 
         ${lrssrc})
+
+if (LRS_BUILD_EXECUTABLE)
+    add_executable(lrsgmp  
+        ${lrslibsrc_SOURCE_DIR}/lrs.c 
+        ${lrslibsrc_SOURCE_DIR}/lrslib.c 
+        ${lrslibsrc_SOURCE_DIR}/lrsgmp.c 
+        ${lrslibsrc_SOURCE_DIR}/lrsdriver.c)
+        
+    target_link_libraries(lrsgmp PRIVATE PUBLIC PkgConfig::gmp)
+    target_compile_definitions(lrsgmp PUBLIC GMP TIMES SIGNALS B64 LRS_QUIET NOINFO DIRECT)
+
+    install(TARGETS lrsgmp DESTINATION bin)
+endif()
 
 set_target_properties(lrslib 
             PROPERTIES POSITION_INDEPENDENT_CODE ON)

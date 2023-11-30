@@ -2,6 +2,8 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/
 cmake_minimum_required(VERSION 3.21)
 project(GeoCalcLib)
 
+include(CTest)
+
 find_package(Matlab REQUIRED COMPONENTS MAIN_PROGRAM)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(Boost REQUIRED)
@@ -10,7 +12,6 @@ add_subdirectory(lrslib)
 add_subdirectory(MexUtilities)
 add_subdirectory(core)
 
-# set(TARGETS)
 
 
 matlab_add_mex(
@@ -26,8 +27,6 @@ matlab_add_mex(
     LINK_TO GeoCalcLib::Core MexUtilities::MexUtilities
     R2018a
 )
-
-enable_testing()
 
 matlab_add_unit_test(
     NAME mexTest

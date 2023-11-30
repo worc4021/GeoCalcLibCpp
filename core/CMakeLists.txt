@@ -21,26 +21,27 @@ else()
         )
 endif()
 
-add_library(GeoCalcLib ${libsource})
+add_library(${PROJECT_NAME} ${libsource})
+add_library(GeoCalcLib::Core ALIAS ${PROJECT_NAME})
 
-target_include_directories(GeoCalcLib PRIVATE ${lrslib_SOURCE_DIR})
-set_target_properties(GeoCalcLib 
-        PROPERTIES POSITION_INDEPENDENT_CODE ON)
-target_link_libraries(GeoCalcLib PUBLIC Eigen3::Eigen Boost::boost lrslib Matlab::mex)
+target_include_directories(${PROJECT_NAME} PRIVATE ${lrslib_SOURCE_DIR})
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen Boost::boost lrslib Matlab::mex)
 
 if (USE_GMPXX)
-    target_link_libraries(GeoCalcLib PUBLIC GMP::GMPXX GMP::GMP)
-    target_compile_definitions(GeoCalcLib PUBLIC GMPMATRIX)
+    target_link_libraries(${PROJECT_NAME} PUBLIC PkgConfig::gmpxx)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC GMPMATRIX)
 endif()
 
-target_include_directories(GeoCalcLib 
+target_include_directories(${PROJECT_NAME} 
         PUBLIC 
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>)
 
-target_compile_features(GeoCalcLib INTERFACE cxx_std_17)
+target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
 
-install(TARGETS GeoCalcLib EXPORT GeoCalcLibConfig
+install(TARGETS ${PROJECT_NAME} EXPORT GeoCalcLibConfig
     ARCHIVE  DESTINATION lib
     LIBRARY  DESTINATION lib
     RUNTIME  DESTINATION bin

@@ -2,13 +2,14 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/
 cmake_minimum_required(VERSION 3.21)
 project(GeoCalcLib)
 
-include(CTest)
 
-find_package(Matlab REQUIRED COMPONENTS MAIN_PROGRAM)
+find_package(Matlab REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(Boost REQUIRED)
 
 add_subdirectory(lrslib)
+
+SET(BUILD_TESTS OFF)
 add_subdirectory(MexUtilities)
 add_subdirectory(core)
 
@@ -21,6 +22,10 @@ matlab_add_mex(
     R2018a
 )
 
+set_target_properties(facetEnumeration 
+                        PROPERTIES 
+                        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
 matlab_add_mex(
     NAME vertexEnumeration
     SRC src/vertexEnumeration.cpp
@@ -28,7 +33,15 @@ matlab_add_mex(
     R2018a
 )
 
-matlab_add_unit_test(
-    NAME mexTest
-    UNITTEST_FILE ${CMAKE_CURRENT_SOURCE_DIR}/GeoCalcLibTest.m
-)
+set_target_properties(vertexEnumeration 
+                        PROPERTIES 
+                        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+if (BUILD_TESTS)
+    include(CTest)
+    enable_testing()
+    matlab_add_unit_test(
+        NAME mexTest
+        UNITTEST_FILE ${CMAKE_CURRENT_SOURCE_DIR}/GeoCalcLibTest.m
+    )
+endif()

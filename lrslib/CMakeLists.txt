@@ -38,9 +38,10 @@ add_library(lrslib
         ${lrssrc})
 
 
-
 set_target_properties(lrslib 
-            PROPERTIES POSITION_INDEPENDENT_CODE ON)
+            PROPERTIES 
+            POSITION_INDEPENDENT_CODE ON
+            MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 target_link_libraries(lrslib PUBLIC PkgConfig::gmp)
 target_compile_definitions(lrslib PUBLIC GMP TIMES SIGNALS B64 LRS_QUIET NOINFO DIRECT)
@@ -55,6 +56,9 @@ if (LRS_BUILD_EXECUTABLE)
         
     target_link_libraries(lrsgmp PUBLIC lrslib)
     install(TARGETS lrsgmp DESTINATION bin)
+    set_target_properties(lrsgmp 
+                        PROPERTIES 
+                        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 endif()
 
 target_include_directories(lrslib PUBLIC

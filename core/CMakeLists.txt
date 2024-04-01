@@ -25,7 +25,10 @@ add_library(${PROJECT_NAME} ${libsource})
 add_library(GeoCalcLib::Core ALIAS ${PROJECT_NAME})
 
 target_include_directories(${PROJECT_NAME} PRIVATE ${lrslib_SOURCE_DIR})
-set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+set_target_properties(${PROJECT_NAME}
+                    PROPERTIES 
+                    POSITION_INDEPENDENT_CODE ON
+                    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 target_link_libraries(${PROJECT_NAME} PUBLIC Eigen3::Eigen Boost::boost lrslib Matlab::mex)
 

@@ -1,5 +1,7 @@
 .DS_Store
 .vscode
+.vs
+out
 
 # Created by https://www.toptal.com/developers/gitignore/api/matlab,cmake,c++
 # Edit at https://www.toptal.com/developers/gitignore?templates=matlab,cmake,c++

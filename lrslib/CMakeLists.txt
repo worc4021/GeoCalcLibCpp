@@ -14,21 +14,35 @@ FetchContent_MakeAvailable(lrslibsrc)
 
 # Protect against libgen.h being included on Windows. We provide a dummy to obtain basename and dirname. Imagine if windows had a patch command..!
 file(READ ${lrslibsrc_SOURCE_DIR}/lrslib.c CONTENT)
-string(REPLACE "#include <libgen.h>" "#ifndef WIN32\n#include <libgen.h>\n#endif" MODIFIED_CONTENT "${CONTENT}")
+string(REPLACE "#include <libgen.h>" "#ifdef WIN32\n#include <io.h>\n#include \"mockup-header.h\"\n#else\n#include <libgen.h>\n#endif" MODIFIED_CONTENT "${CONTENT}")
 file(WRITE ${lrslibsrc_SOURCE_DIR}/lrslib.c "${MODIFIED_CONTENT}")
 
 file(READ ${lrslibsrc_SOURCE_DIR}/lrsgmp.h CONTENT)
-string(REPLACE "#include <unistd.h>" "#ifdef WIN32\n#include <io.h>\n#else\n#include <libgen.h>\n#endif" MODIFIED_CONTENT "${CONTENT}")
+string(REPLACE "#include <unistd.h>" "#ifdef WIN32\n#include <io.h>\n#include \"mockup-header.h\"\n#else\n#include <libgen.h>\n#endif" MODIFIED_CONTENT "${CONTENT}")
 file(WRITE ${lrslibsrc_SOURCE_DIR}/lrsgmp.h "${MODIFIED_CONTENT}")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(gmp REQUIRED IMPORTED_TARGET gmp)
 
-set(lrssrc)
+add_library(lrslong1 ${lrslibsrc_SOURCE_DIR}/lrslong.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_compile_definitions(lrslong1 PRIVATE MA SAFE LRSLONG OMIT_SIGNALS TIMES)
+add_library(lrslong2 ${lrslibsrc_SOURCE_DIR}/lrslong.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_compile_definitions(lrslong2 PRIVATE B128 MA SAFE LRSLONG OMIT_SIGNALS TIMES)
+add_library(lrslib1 ${lrslibsrc_SOURCE_DIR}/lrslib.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_compile_definitions(lrslib1 PRIVATE MA SAFE LRSLONG OMIT_SIGNALS SIGNALS TIMES)
+add_library(lrslib2 ${lrslibsrc_SOURCE_DIR}/lrslib.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_compile_definitions(lrslib2 PRIVATE B128 MA SAFE LRSLONG OMIT_SIGNALS SIGNALS TIMES)
+add_library(lrslibgmp ${lrslibsrc_SOURCE_DIR}/lrslib.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_compile_definitions(lrslibgmp PRIVATE MA GMP OMIT_SIGNALS SIGNALS TIMES)
+target_link_libraries(lrslibgmp PUBLIC PkgConfig::gmp)
+add_library(lrslibmp ${lrslibsrc_SOURCE_DIR}/lrslib.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_compile_definitions(lrslibmp PRIVATE MA MP OMIT_SIGNALS TIMES)
+add_library(lrs1 ${lrslibsrc_SOURCE_DIR}/lrs.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_compile_definitions(lrs1 PRIVATE B128 MA OMIT_SIGNALS SIGNALS TIMES)
 
-list(APPEND lrssrc  ${lrslibsrc_SOURCE_DIR}/lrslib.c 
-                    ${lrslibsrc_SOURCE_DIR}/lrsgmp.c 
-                    ${lrslibsrc_SOURCE_DIR}/lrsdriver.c)
+
+set(lrssrc)
+list(APPEND lrssrc ${lrslibsrc_SOURCE_DIR}/lrsdriver.c)
 
 if (WIN32)
 list(APPEND lrssrc src/libgen-mockup.cpp)
@@ -38,17 +52,15 @@ add_library(lrslib
         ${lrssrc})
 
 
-set_target_properties(lrslib 
-            PROPERTIES 
-            POSITION_INDEPENDENT_CODE ON
-            MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+add_executable(lrs ${lrslibsrc_SOURCE_DIR}/lrsdriver.c $<$<BOOL:WIN32>:src/libgen-mockup.cpp>)
+target_link_libraries(lrs PRIVATE lrslong1 lrslong2 lrslib1 lrslib2 lrslibgmp lrs1)
+target_include_directories(lrs PRIVATE ${lrslibsrc_SOURCE_DIR})
+target_compile_definitions(lrs PUBLIC B128 MA OMIT_SIGNALS SIGNALS TIMES)
 
 target_link_libraries(lrslib PUBLIC PkgConfig::gmp)
 target_compile_definitions(lrslib PUBLIC GMP TIMES SIGNALS B64 LRS_QUIET NOINFO DIRECT)
 
-if (WIN32)
-target_compile_definitions(lrslib PUBLIC PATH_MAX=1024 __STDC__)
-endif()
+
 
 if (LRS_BUILD_EXECUTABLE)
     add_executable(lrsgmp  
@@ -56,10 +68,22 @@ if (LRS_BUILD_EXECUTABLE)
         
     target_link_libraries(lrsgmp PUBLIC lrslib)
     install(TARGETS lrsgmp DESTINATION bin)
-    set_target_properties(lrsgmp 
-                        PROPERTIES 
-                        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    
 endif()
+
+get_property(current_targets DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY BUILDSYSTEM_TARGETS)
+foreach(TARGET ${current_targets})
+    set_target_properties(${TARGET}
+            PROPERTIES 
+            POSITION_INDEPENDENT_CODE ON
+            MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+            WINDOWS_EXPORT_ALL_SYMBOLS ON)
+    if (WIN32)
+        target_compile_definitions(${TARGET} PUBLIC PATH_MAX=1024 __STDC__)
+        target_include_directories(${TARGET} AFTER PRIVATE include)
+    endif()
+endforeach()
+
 
 target_include_directories(lrslib PUBLIC
     $<BUILD_INTERFACE:${lrslibsrc_SOURCE_DIR}>

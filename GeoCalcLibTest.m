@@ -65,6 +65,17 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
                 testCase.verifyTrue(any(all([b,A]==hyperplane',2)),"Hyperplanes do not match expected ones.");
             end
         end
+
+        function testLinearities(testCase)
+            V = 3*eye(2);
+            [Aineq,bineq,Aeq,beq] = facetEnumeration(V);
+            testCase.verifyEqual(size(Aineq,1),2,"Number of inequalities");
+            testCase.verifyLessThanOrEqual(Aineq*V(:,1),bineq,"Inequalities");
+            testCase.verifyLessThanOrEqual(Aineq*V(:,2),bineq,"Inequalities");
+            testCase.verifyEqual(size(Aeq,1),1, "Number of linearities");
+            testCase.verifyEqual(Aeq*V(:,1),beq,"Linearity");
+            testCase.verifyEqual(Aeq*V(:,2),beq,"Linearity");
+        end
     end
     
 end

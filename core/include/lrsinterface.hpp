@@ -94,5 +94,17 @@ class Polytope {
             return HrepIneq.col(0);
         }
 
+        MatrixXq getAeq(void) {
+            if (!inHrep)
+                facetEnumerate();
+            return HrepEq.block(0, 1, HrepEq.rows(), HrepEq.cols() - 1);
+        }
+
+        MatrixXq getBeq(void) {
+            if (!inHrep)
+                facetEnumerate();
+            return HrepEq.col(0);
+        }
+
         
 };

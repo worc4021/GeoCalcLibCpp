@@ -40,5 +40,11 @@ public:
         if (outputs.size()>1)
             outputs[1] = utilities::eigen::convert(fromMatrixXq(poly.getB()));
 
+        if (outputs.size() > 2)
+            outputs[2] = utilities::eigen::convert(fromMatrixXq(poly.getAeq()));
+
+        if (outputs.size() > 3)
+            outputs[3] = utilities::eigen::convert(fromMatrixXq(poly.getBeq()));
+
     }
 };

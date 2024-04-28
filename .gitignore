@@ -89,4 +89,8 @@ codegen/
 # Octave session info
 octave-workspace
 
+# Visual studio (code)
+.vs/
+.vscode/
+
 # End of https://www.toptal.com/developers/gitignore/api/matlab,cmake,c++

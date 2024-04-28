@@ -213,7 +213,8 @@ void Polytope::facetEnumerate(void) {
     }
 
     output = lrs_alloc_mp_vector (Q->n);
-    std::list<RowXq> buffer;
+    std::list<RowXq> bufferIneq;
+    std::list<RowXq> bufferEq;
     lrs_mp_vector num, den;
     num = lrs_alloc_mp_vector(VrepV.cols());
     den = lrs_alloc_mp_vector(VrepV.cols());
@@ -241,13 +242,15 @@ void Polytope::facetEnumerate(void) {
     if ( lrs_getfirstbasis (&P, Q, &Lin, TRUE) ){
 
         for (auto col = 0L; col < Q->nredundcol; col++)
-        lrs_printoutput (Q, Lin[col]);
+        {
+            bufferEq.push_back(classifyForHalfspaceRep(VrepV.cols(), Lin[col]));
+        }
 
         do
         {
         for (auto col = 0; col <= P->d; col++)
             if (lrs_getsolution (P, Q, output, col))
-                buffer.push_back(classifyForHalfspaceRep(VrepV.cols(), output));
+                bufferIneq.push_back(classifyForHalfspaceRep(VrepV.cols(), output));
         }
         while (lrs_getnextbasis (&P, Q, FALSE));
     }
@@ -256,11 +259,16 @@ void Polytope::facetEnumerate(void) {
     lrs_clear_mp_vector ( den, Q->n);
     lrs_free_dic ( P , Q);
     lrs_free_dat ( Q );
-    HrepIneq = MatrixXq(buffer.size(), VrepV.cols());
-    HrepEq = MatrixXq(0,VrepV.cols());
+    HrepIneq = MatrixXq(bufferIneq.size(), VrepV.cols());
+    HrepEq = MatrixXq(bufferEq.size(), VrepV.cols());
     auto rowCount  = 0;
-    for (auto row : buffer){
+    for (auto row : bufferIneq){
         setRow(HrepIneq, rowCount, row);
+        rowCount++;
+    }
+    rowCount = 0;
+    for (auto row : bufferEq) {
+        setRow(HrepEq, rowCount, row);
         rowCount++;
     }
     inHrep = true;

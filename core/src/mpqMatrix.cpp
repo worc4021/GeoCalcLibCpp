@@ -54,3 +54,11 @@ Eigen::MatrixXd fromMatrixXq(const MatrixXq& A) {
 
     return retVal;
 }
+
+VectorXq fromVectorXd(const Eigen::VectorXd& A) {
+    VectorXq retVal(A.rows());
+    for (auto i = 0; i < A.rows(); i++)
+        retVal(i) = mpq(A(i));
+
+    return retVal;
+}

@@ -46,6 +46,8 @@ namespace Eigen {
 
 typedef Eigen::Matrix<mpq, Eigen::Dynamic, Eigen::Dynamic> MatrixXq;
 typedef Eigen::Matrix<mpz, Eigen::Dynamic, Eigen::Dynamic> MatrixXz;
+typedef Eigen::Matrix<mpq, Eigen::Dynamic, 1> VectorXq;
+typedef Eigen::Matrix<mpz, Eigen::Dynamic, 1> VectorXz;
 typedef Eigen::Matrix<mpq, 1, Eigen::Dynamic> RowXq;
 typedef Eigen::Matrix<mpz, 1, Eigen::Dynamic> RowXz;
 
@@ -58,3 +60,4 @@ void getRow(const MatrixXq& A, Eigen::Index row, RowXz& numerator, RowXz& denomi
 void setRow(MatrixXq& A, Eigen::Index row, const RowXq& newRow);
 MatrixXq fromMatrixXd(const Eigen::MatrixXd& A);
 Eigen::MatrixXd fromMatrixXq(const MatrixXq& A);
+VectorXq fromVectorXd(const Eigen::VectorXd& A);

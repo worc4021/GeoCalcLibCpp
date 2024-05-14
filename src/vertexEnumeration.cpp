@@ -26,29 +26,46 @@ public:
 
         Polytope poly;
 
+        std::vector<std::size_t> linearities(0);
+
+        MatrixXq A = fromMatrixXd(utilities::eigen::convert(inputs[0]));
+        MatrixXq b = fromMatrixXd(utilities::eigen::convert(inputs[1]));
+
         if (inputs.size() > 2)
         {
-            if (inputs.size() < 4)
-                utilities::error("If Aineq and Aeq are provided four arguments are required");
-
-            if (inputs[0].getDimensions()[1] != inputs[2].getDimensions()[1])
-                utilities::error("Aineq and Aeq have to be in the same dimension");
-
-            poly.setHrepEq(fromMatrixXd(utilities::eigen::convert(inputs[2])), fromMatrixXd(utilities::eigen::convert(inputs[3])));
+            matlab::data::TypedArray<double> linearitiesArray = std::move(inputs[2]);
+            linearities.resize(linearitiesArray.getNumberOfElements());
+            std::transform(linearitiesArray.begin(), linearitiesArray.end(), linearities.begin(), [](auto i) { return static_cast<std::size_t>(i) - 1; });
         }
+        Vrep vrep;
+        poly.setHrep(A, b, linearities);
+        poly.getVrep(vrep);
 
-        poly.setHrepIneq(fromMatrixXd(utilities::eigen::convert(inputs[0])), fromMatrixXd(utilities::eigen::convert(inputs[1])));
-
+        MatrixXq verticesAndRays(vrep.rows.size(), vrep.nDim);
+        
+        matlab::data::ArrayFactory factory;
+        matlab::data::TypedArray<bool> isVertex = factory.createArray<bool>({vrep.rows.size(),1});
+        qType one_t(1L);
+        for (std::size_t iRow = 0; iRow < vrep.rows.size(); iRow++)
+        {
+            verticesAndRays.row(iRow) = vrep.rows[iRow].tail(vrep.nDim);
+            isVertex[iRow] = vrep.rows[iRow](0) == one_t;
+        }
+        
         if (outputs.size() > 0)
-            outputs[0] = utilities::eigen::convert(fromMatrixXq(poly.getVertices()));
+            outputs[0] = utilities::eigen::convert(fromMatrixXq(verticesAndRays));
 
         if (outputs.size() > 1)
-            outputs[1] = utilities::eigen::convert(fromMatrixXq(poly.getRays()));
+            outputs[1] = std::move(isVertex);
 
-        if (outputs.size() > 2)
-        {
-            matlab::data::ArrayFactory factory;
-            outputs[2] = factory.createScalar<double>(poly.getVolume());
+        if (outputs.size() > 2) {
+            matlab::data::TypedArray<double> linearitiesArray = factory.createArray<double>({vrep.linearities.size(),1});
+            std::transform(vrep.linearities.begin(), vrep.linearities.end(), linearitiesArray.begin(), [](auto i) { return static_cast<double>(i+1); });
+            outputs[2] = std::move(linearitiesArray);
         }
+
+        if (outputs.size() > 3)
+            outputs[3] = factory.createScalar<double>(poly.volume);
+
     }
 };

@@ -28,7 +28,9 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
             A = [eye(n);-eye(floor(n/2),n)];
             b = ones(n+floor(n/2),1);
 
-            [V,R] = vertexEnumeration(A,b);
+            [Vall,type,linearities,vol] = vertexEnumeration(A,b);
+            V = Vall(type,:);
+            R = Vall(~type,:);
 
             Vref = ones(n-1,n);
             Vref(1,1) = -1;
@@ -42,6 +44,8 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
             for r = Rref'
                 testCase.verifyTrue(any(all(R==r',2)),"Rays do not match expected ones.");
             end
+
+            testCase.verifyEmpty(linearities, "Linearities detected");
         end
 
 
@@ -52,7 +56,14 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
                 0,-1];
             R = [1,0];
 
-            [A,b] = facetEnumeration(V,R);
+            data = [V;R];
+            isVertex = [true(3,1);false(1,1)];
+
+            [A,b,linearities] = facetEnumeration(data,isVertex);
+
+            allIdx = 1:numel(b);
+            Aineq = A(setdiff(allIdx,linearities),:);
+            bineq = b(setdiff(allIdx,linearities));
 
             Aref = [-1,1;...
                     -1,-1;...
@@ -62,19 +73,28 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
 
             tmp = [bref,Aref];
             for hyperplane = tmp'
-                testCase.verifyTrue(any(all([b,A]==hyperplane',2)),"Hyperplanes do not match expected ones.");
+                testCase.verifyTrue(any(all([bineq,Aineq]==hyperplane',2)),"Hyperplanes do not match expected ones.");
             end
+            testCase.verifyEmpty(linearities, "Linearities were present");
+            
         end
 
         function testLinearities(testCase)
             V = 3*eye(2);
-            [Aineq,bineq,Aeq,beq] = facetEnumeration(V);
+            [A,b,linearities] = facetEnumeration(V);
+
+            allIdx = 1:numel(b);
+            Aineq = A(setdiff(allIdx,linearities),:);
+            bineq = b(setdiff(allIdx,linearities));
+            Aeq = A(linearities,:);
+            beq = b(linearities);
+
             testCase.verifyEqual(size(Aineq,1),2,"Number of inequalities");
-            testCase.verifyLessThanOrEqual(Aineq*V(:,1),bineq,"Inequalities");
-            testCase.verifyLessThanOrEqual(Aineq*V(:,2),bineq,"Inequalities");
+            testCase.verifyLessThanOrEqual(Aineq*(V(1,:)'),bineq,"Inequalities");
+            testCase.verifyLessThanOrEqual(Aineq*(V(2,:)'),bineq,"Inequalities");
             testCase.verifyEqual(size(Aeq,1),1, "Number of linearities");
-            testCase.verifyEqual(Aeq*V(:,1),beq,"Linearity");
-            testCase.verifyEqual(Aeq*V(:,2),beq,"Linearity");
+            testCase.verifyEqual(Aeq*(V(1,:)'),beq,"Linearity");
+            testCase.verifyEqual(Aeq*(V(2,:)'),beq,"Linearity");
         end
     end
     

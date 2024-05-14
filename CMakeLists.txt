@@ -2,6 +2,7 @@ set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/
 cmake_minimum_required(VERSION 3.21)
 project(GeoCalcLib)
 
+set(CMAKE_CXX_STANDARD 20)
 
 find_package(Matlab REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
@@ -9,7 +10,7 @@ find_package(Boost REQUIRED)
 
 add_subdirectory(lrslib)
 
-SET(BUILD_TESTS OFF)
+SET(BUILD_TESTS ON)
 add_subdirectory(MexUtilities)
 add_subdirectory(core)
 
@@ -40,6 +41,13 @@ set_target_properties(vertexEnumeration
 if (BUILD_TESTS)
     include(CTest)
     enable_testing()
+    
+    add_executable(GeoCalcLibTest src/gmpcpptest.cpp)
+    target_link_libraries(GeoCalcLibTest PRIVATE GeoCalcLib::Core Eigen3::Eigen)
+    set_target_properties(GeoCalcLibTest
+                        PROPERTIES 
+                        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
     matlab_add_unit_test(
         NAME mexTest
         UNITTEST_FILE ${CMAKE_CURRENT_SOURCE_DIR}/GeoCalcLibTest.m

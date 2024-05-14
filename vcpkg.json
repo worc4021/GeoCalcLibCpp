@@ -5,6 +5,7 @@
         "eigen3",
         "boost-compute",
         "fmt",
-        "pkgconf"
+        "pkgconf",
+        "gtest"
     ]
 }

@@ -51,5 +51,6 @@ if (BUILD_TESTS)
     matlab_add_unit_test(
         NAME mexTest
         UNITTEST_FILE ${CMAKE_CURRENT_SOURCE_DIR}/GeoCalcLibTest.m
+        ADDITIONAL_PATH $<TARGET_FILE_DIR:vertexEnumeration>
     )
 endif()

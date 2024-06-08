@@ -10,7 +10,7 @@ find_package(Boost REQUIRED)
 
 add_subdirectory(lrslib)
 
-SET(BUILD_TESTS ON)
+option(BUILD_TESTS "Build tests" OFF)
 add_subdirectory(MexUtilities)
 add_subdirectory(core)
 

@@ -13,6 +13,16 @@
         "--network=bridge",
         "--rm"
     ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-vscode.cpptools-extension-pack",
+                "GitHub.copilot",
+                "eamodio.gitlens"
+            ]
+        }
+    },
     "remoteUser": "azureuser",
-    "postCreateCommand": "echo $MATLAB_MAC | gpg --batch --yes --passphrase-fd 0 --output /usr/share/matlab/licenses/license.lic --decrypt /usr/share/matlab/licenses/license.lic.gpg"
+    "postCreateCommand": "echo $MATLAB_MAC | gpg --batch --yes --passphrase-fd 0 --output /usr/share/matlab/licenses/license.lic --decrypt /usr/share/matlab/licenses/license.lic.gpg",
+    "initializeCommand": "git submodule update --init --recursive"
 }

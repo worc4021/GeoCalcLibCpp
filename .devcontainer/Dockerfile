@@ -32,3 +32,7 @@ RUN adduser --shell /bin/bash --disabled-password --gecos "" ${USERNAME} \
     && echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
     && chown -R ${USERNAME} /usr/share/matlab/licenses
+
+
+ENV LD_LIBRARY_PATH=.:/usr/share/matlab/runtime/glnxa64:/usr/share/matlab/bin/glnxa64:/usr/share/matlab/sys/os/glnxa64:/usr/share/matlab/sys/opengl/lib/glnxa64
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libstdc++.so.6:/lib/x86_64-linux-gnu/libc.so.6

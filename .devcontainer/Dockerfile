@@ -1,7 +1,8 @@
 FROM debian:10-slim
 
-RUN apt update && apt install -y build-essential gcc g++ gfortran cmake git sudo tar curl zip unzip ninja-build pkg-config gdb ca-certificates \
-        libasound2 libatk1.0-0 \
+RUN apt update && apt install -y build-essential gcc g++ gfortran git sudo tar curl zip unzip \
+        ninja-build pkg-config gdb autoconf libtool- python3 \
+        ca-certificates libasound2 libatk1.0-0  \
         libgstreamer-plugins-base1.0-0 libgstreamer1.0-0 libgtk-3-0 libidl-2-0 \ 
         libxft2 libxi6 libxinerama1 libxrandr2 libxrender1 libxss1 libxt6 \
         libnss3 libpam0g libpango-1.0-0 libpangocairo-1.0-0 libpangoft2-1.0-0 \
@@ -19,6 +20,11 @@ RUN wget https://www.mathworks.com/mpm/glnxa64/mpm \
         && update-alternatives --install /usr/bin/matlab matlab /usr/share/matlab/bin/matlab 10
 
 ADD license.lic.gpg /usr/share/matlab/licenses/license.lic.gpg
+
+ADD reinstall-cmake.sh /tmp/reinstall-cmake.sh
+
+RUN chmod +x /tmp/reinstall-cmake.sh \
+    && /tmp/reinstall-cmake.sh 3.29.6
 
 ARG USERNAME=vscode
 

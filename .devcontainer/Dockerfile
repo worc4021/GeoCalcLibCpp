@@ -1,7 +1,7 @@
 FROM debian:10-slim
 
 RUN apt update && apt install -y build-essential gcc g++ gfortran git sudo tar curl zip unzip \
-        ninja-build pkg-config gdb autoconf libtool- python3 \
+        ninja-build pkg-config gdb autoconf libtool python3 \
         ca-certificates libasound2 libatk1.0-0  \
         libgstreamer-plugins-base1.0-0 libgstreamer1.0-0 libgtk-3-0 libidl-2-0 \ 
         libxft2 libxi6 libxinerama1 libxrandr2 libxrender1 libxss1 libxt6 \

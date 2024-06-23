@@ -24,7 +24,10 @@ ADD license.lic.gpg /usr/share/matlab/licenses/license.lic.gpg
 ADD reinstall-cmake.sh /tmp/reinstall-cmake.sh
 
 RUN chmod +x /tmp/reinstall-cmake.sh \
-    && /tmp/reinstall-cmake.sh 3.29.6
+    && /tmp/reinstall-cmake.sh 3.29.6 \
+    && update-alternatives --install /usr/bin/cmake cmake /opt/cmake/bin/cmake 10 \
+    && update-alternatives --install /usr/bin/ctest ctest /opt/cmake/bin/ctest 10 \
+    && update-alternatives --install /usr/bin/cpack cpack /opt/cmake/bin/cpack 10
 
 ARG USERNAME=vscode
 

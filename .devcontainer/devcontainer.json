@@ -4,7 +4,7 @@
         "dockerfile": "Dockerfile",
         "context": ".",
         "args": {
-            "USERNAME": "${localEnv:MATLAB_USER}"
+            "USERNAME": "azureuser"
         }
     },
     "runArgs": [
@@ -13,9 +13,6 @@
         "--network=bridge",
         "--rm"
     ],
-    "remoteUser": "${localEnv:MATLAB_USER}",
-    "remoteEnv": {
-        "MLM_LICENSE_FILE": "/home/vscode/license.lic"
-    },
-    "postAttachCommand": "echo $MATLAB_MAC | gpg --batch --yes --passphrase-fd 0 --output ~/license.lic --decrypt ~/license.lic.gpg"
+    "remoteUser": "azureuser",
+    "postCreateCommand": "echo $MATLAB_MAC | gpg --batch --yes --passphrase-fd 0 --output /usr/share/matlab/licenses/license.lic --decrypt /usr/share/matlab/licenses/license.lic.gpg"
 }

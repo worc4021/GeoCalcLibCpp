@@ -24,4 +24,5 @@ ARG USERNAME=vscode
 
 RUN adduser --shell /bin/bash --disabled-password --gecos "" ${USERNAME} \
     && echo "$USERNAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${USERNAME} \
-    && chmod 0440 /etc/sudoers.d/${USERNAME}
+    && chmod 0440 /etc/sudoers.d/${USERNAME} \
+    && chown -R ${USERNAME} /usr/share/matlab/licenses

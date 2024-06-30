@@ -57,7 +57,11 @@ public:
             matlab::data::TypedArray<double> linearities = factory.createArray<double>({hrep.linearities.size(),1});
             std::transform(hrep.linearities.begin(), hrep.linearities.end(), linearities.begin(), [](auto i) { return static_cast<double>(i + 1); });
             outputs[2] = std::move(linearities);
+            if (outputs.size() > 3) {
+                outputs[3] = factory.createScalar(poly.volume);
+            }
         }
+
 
     }
 };

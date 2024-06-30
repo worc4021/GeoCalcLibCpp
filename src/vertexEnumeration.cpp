@@ -64,8 +64,5 @@ public:
             outputs[2] = std::move(linearitiesArray);
         }
 
-        if (outputs.size() > 3)
-            outputs[3] = factory.createScalar<double>(poly.volume);
-
     }
 };

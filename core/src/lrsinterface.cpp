@@ -77,8 +77,7 @@ void Polytope::vertexEnumerate(void) {
 
     Qv->m = hRep.rows.size();
     Qv->n = hRep.nDim + 1;
-    Qv->getvolume = 1L;
-    
+        
     output = lrs_alloc_mp_vector (Qv->n);
 
     lrs_mp_vector num, den;
@@ -115,9 +114,6 @@ void Polytope::vertexEnumerate(void) {
         } while (lrs_getnextbasis(&Pv, Qv, FALSE));
     }
 
-    rescalevolume (Pv, Qv, Qv->Nvolume, Qv->Dvolume);
-    rattodouble (Qv->Nvolume, Qv->Dvolume, &volume);
-
     lrs_clear_mp_vector (output, Qv->n);
     lrs_clear_mp_vector (num, Qv->n);
     lrs_clear_mp_vector (den, Qv->n);
@@ -140,6 +136,7 @@ void Polytope::facetEnumerate(void) {
     Q->n = vRep.nDim + 1;
     Q->hull = TRUE;
     Q->polytope = TRUE;
+    Q->getvolume = TRUE;
 
     if ( std::find(vRep.isVertex.begin(), vRep.isVertex.end(), false) != vRep.isVertex.end() ){
         Q->polytope = FALSE;
@@ -184,6 +181,10 @@ void Polytope::facetEnumerate(void) {
         }
         while (lrs_getnextbasis (&P, Q, FALSE));
     }
+
+    rescalevolume (P, Q, Q->Nvolume, Q->Dvolume);
+    rattodouble (Q->Nvolume, Q->Dvolume, &volume);
+
     lrs_clear_mp_vector ( output, Q->n);
     lrs_clear_mp_vector ( num, Q->n);
     lrs_clear_mp_vector ( den, Q->n);

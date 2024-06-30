@@ -28,7 +28,7 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
             A = [eye(n);-eye(floor(n/2),n)];
             b = ones(n+floor(n/2),1);
 
-            [Vall,type,linearities,vol] = vertexEnumeration(A,b);
+            [Vall,type,linearities] = vertexEnumeration(A,b);
             V = Vall(type,:);
             R = Vall(~type,:);
 
@@ -59,7 +59,7 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
             data = [V;R];
             isVertex = [true(3,1);false(1,1)];
 
-            [A,b,linearities] = facetEnumeration(data,isVertex);
+            [A,b,linearities,vol] = facetEnumeration(data,isVertex);
 
             allIdx = 1:numel(b);
             Aineq = A(setdiff(allIdx,linearities),:);
@@ -95,6 +95,26 @@ classdef GeoCalcLibTest < matlab.unittest.TestCase
             testCase.verifyEqual(size(Aeq,1),1, "Number of linearities");
             testCase.verifyEqual(Aeq*(V(1,:)'),beq,"Linearity");
             testCase.verifyEqual(Aeq*(V(2,:)'),beq,"Linearity");
+        end
+
+        function testVolume(testCase)
+            V = [1,1;
+                -1,1;
+                1,-1;
+                -1,-1];
+
+            
+            [~,~,~,refVol] = facetEnumeration(V);
+
+            testCase.verifyEqual(refVol,4,"Volume");
+
+            for i = 1:10
+                alpha = rand()*2*pi;
+                P = [cos(alpha),sin(alpha);-sin(alpha),cos(alpha)];
+                [~,~,~,vol] = facetEnumeration(V*P);
+                testCase.verifyLessThanOrEqual(abs(refVol-vol),1e-13,"Volume once rotated");
+            end
+
         end
     end
     

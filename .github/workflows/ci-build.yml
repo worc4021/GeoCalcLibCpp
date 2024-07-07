@@ -14,7 +14,10 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
-    - uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Setup up MSVC dev cmd
+      uses: ilammy/msvc-dev-cmd@v1
+    - name: Install Ninja
+      uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install Matlab
       run: |
         Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe -Verbose
@@ -41,10 +44,10 @@ jobs:
         wget https://www.mathworks.com/mpm/glnxa64/mpm
         chmod +x mpm
         ./mpm install  --release R2019b --products MATLAB
-        export PATH=$PATH:/usr/share/matlab/bin
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |
+        export PATH=/usr/share/matlab/bin:$PATH
         cmake --preset linux-gcc-release-config
       working-directory: ${{ github.workspace }}
     - name: Build

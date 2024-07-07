@@ -41,7 +41,7 @@ jobs:
         wget https://www.mathworks.com/mpm/glnxa64/mpm
         chmod +x mpm
         ./mpm install  --release R2019b --products MATLAB
-        update-alternatives --install /usr/bin/matlab matlab /usr/share/matlab/bin/matlab 10
+        export PATH=$PATH:/usr/share/matlab/bin
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |

@@ -87,6 +87,7 @@ jobs:
     - name: Configure
       run: |
         brew install libtool autoconf automake
+        export PATH=/Applications/MATLAB/${{ env.MATLAB_VERSION }}/bin:$PATH
         cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
       working-directory: ${{ github.workspace }}
     - name: Build

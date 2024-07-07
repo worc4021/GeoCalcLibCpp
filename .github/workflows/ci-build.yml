@@ -62,3 +62,29 @@ jobs:
       with:
         name: linux
         path: out/install/linux-gcc-release-config/mex/*mex*
+
+  macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+    - uses: seanmiddleditch/gha-setup-ninja@master
+    - name: Install Matlab
+      run: |
+        curl -L -o ~/Downloads/mpm https://www.mathworks.com/mpm/maca64/mpm
+        chmod +x mpm
+        ./mpm install  --release R2019b --products MATLAB
+      working-directory: ${{ runner.temp }}
+    - name: Configure
+      run: |
+        cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
+      working-directory: ${{ github.workspace }}
+    - name: Build
+      run: |
+        cmake --build --preset macos-gcc-release-build --target install
+      working-directory: ${{ github.workspace }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: macos
+        path: out/install/macos-gcc-release-config/mex/*mex*

@@ -86,6 +86,7 @@ jobs:
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |
+        brew install libtool
         cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
       working-directory: ${{ github.workspace }}
     - name: Build

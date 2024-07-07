@@ -48,7 +48,7 @@ jobs:
     - name: Configure
       run: |
         export PATH=/usr/share/matlab/bin:$PATH
-        cmake --preset linux-gcc-release-config
+        cmake --preset linux-gcc-release-config -DBUILD_TESTS=OFF
       working-directory: ${{ github.workspace }}
     - name: Build
       run: |

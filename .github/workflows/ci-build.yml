@@ -7,6 +7,9 @@ on:
     branches: [ "master" ]
   workflow_dispatch:
 
+env:
+  MATLAB_VERSION: R2021b
+
 jobs:
   windows:
     runs-on: windows-latest
@@ -21,7 +24,7 @@ jobs:
     - name: Install Matlab
       run: |
         Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe
-        .\mpm.exe install  --release R2019b --products MATLAB
+        .\mpm.exe install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |
@@ -47,7 +50,7 @@ jobs:
       run: |
         wget https://www.mathworks.com/mpm/glnxa64/mpm
         chmod +x mpm
-        ./mpm install  --release R2019b --products MATLAB
+        ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |
@@ -74,7 +77,7 @@ jobs:
       run: |
         curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
         chmod +x mpm
-        ./mpm install  --release R2019b --products MATLAB
+        ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |

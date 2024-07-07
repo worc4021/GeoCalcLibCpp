@@ -14,7 +14,7 @@ option(BUILD_TESTS "Build tests" ON)
 add_subdirectory(MexUtilities)
 add_subdirectory(core)
 
-
+include(GNUInstallDirs)
 
 matlab_add_mex(
     NAME facetEnumeration
@@ -54,3 +54,10 @@ if (BUILD_TESTS)
         ADDITIONAL_PATH $<TARGET_FILE_DIR:vertexEnumeration>
     )
 endif()
+
+set(MEX_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/mex" CACHE PATH "Installation directory for MEX files")
+install(TARGETS vertexEnumeration
+        DESTINATION ${MEX_INSTALL_DIR})
+
+install(TARGETS facetEnumeration
+        DESTINATION ${MEX_INSTALL_DIR})

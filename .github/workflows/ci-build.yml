@@ -20,7 +20,7 @@ jobs:
       uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install Matlab
       run: |
-        Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe -Verbose
+        Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe
         .\mpm.exe install  --release R2019b --products MATLAB
       working-directory: ${{ runner.temp }}
     - name: Configure
@@ -29,8 +29,12 @@ jobs:
       working-directory: ${{ github.workspace }}
     - name: Build
       run: |
-        cmake --build --preset windows-msvc-release-build
+        cmake --build --preset windows-msvc-release-build --target install
       working-directory: ${{ github.workspace }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: windows
+        path: out/install/windows-msvc-release-config/mex/*mex*
   
   ubuntu:
     runs-on: ubuntu-latest
@@ -52,5 +56,9 @@ jobs:
       working-directory: ${{ github.workspace }}
     - name: Build
       run: |
-        cmake --build --preset linux-gcc-release-build
+        cmake --build --preset linux-gcc-release-build --target install
       working-directory: ${{ github.workspace }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: linux
+        path: out/install/linux-gcc-release-config/mex/*mex*

@@ -72,7 +72,7 @@ jobs:
     - uses: seanmiddleditch/gha-setup-ninja@master
     - name: Install Matlab
       run: |
-        curl -L -o ~/Downloads/mpm https://www.mathworks.com/mpm/maca64/mpm
+        curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
         chmod +x mpm
         ./mpm install  --release R2019b --products MATLAB
       working-directory: ${{ runner.temp }}

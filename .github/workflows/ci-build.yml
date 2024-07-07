@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 env:
-  MATLAB_VERSION: R2021b
+  MATLAB_VERSION: R2022b
 
 jobs:
   windows:

@@ -4,6 +4,7 @@
         {
             "name": "config-base",
             "hidden": true,
+            "generator": "Ninja",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"

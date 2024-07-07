@@ -25,3 +25,22 @@ jobs:
       run: |
         cmake --build --preset windows-msvc-release-build
       working-directory: ${{ github.workspace }}
+  
+  ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install Matlab
+      run: |
+        wget https://www.mathworks.com/mpm/linux64/mpm
+        chmod +x mpm
+        ./mpm install  --release R2019b --products MATLAB
+      working-directory: ${{ runner.temp }}
+    - name: Configure
+      run: |
+        cmake --preset linux-gcc-release-config
+      working-directory: ${{ github.workspace }}
+    - name: Build
+      run: |
+        cmake --build --preset linux-gcc-release-build
+      working-directory: ${{ github.workspace }}

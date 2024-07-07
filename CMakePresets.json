@@ -3,7 +3,6 @@
     "configurePresets": [
         {
             "name": "config-base",
-            "generator": "Ninja",
             "hidden": true,
             "architecture": {
                 "value": "x64",

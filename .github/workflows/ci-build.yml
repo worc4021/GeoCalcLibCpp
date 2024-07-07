@@ -36,7 +36,7 @@ jobs:
         submodules: true
     - name: Install Matlab
       run: |
-        wget https://www.mathworks.com/mpm/linux64/mpm
+        wget https://www.mathworks.com/mpm/glnxa64/mpm
         chmod +x mpm
         ./mpm install  --release R2019b --products MATLAB
       working-directory: ${{ runner.temp }}

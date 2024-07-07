@@ -15,5 +15,13 @@ jobs:
     - name: Install Matlab
       run: |
         Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe -Verbose
-        Get-ChildItem -Path .\ -Recurse
         .\mpm.exe install  --release R2019b --products MATLAB
+      working-directory: ${{ runner.temp }}
+    - name: Configure
+      run: |
+        cmake --preset windows-msvc-release-config
+      working-directory: ${{ github.workspace }}
+    - name: Build
+      run: |
+        cmake --build --preset windows-msvc-release-build
+      working-directory: ${{ github.workspace }}

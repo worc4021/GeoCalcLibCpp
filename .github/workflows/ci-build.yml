@@ -94,7 +94,7 @@ jobs:
     - name: Configure
       run: |
         brew install libtool autoconf automake
-        cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF -DMATLAB_RELEASE=${{ env.MATLAB_VERSION }} --debug-find-var=Matlab_MEX_LIBRARY
+        cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
       working-directory: ${{ github.workspace }}
     - name: Build
       run: |

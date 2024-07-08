@@ -3,14 +3,18 @@ cmake_minimum_required(VERSION 3.21)
 project(GeoCalcLib)
 
 set(CMAKE_CXX_STANDARD 20)
+option(BUILD_TESTS "Build tests" ON)
+option(MATLAB_RELEASE "Release version of Matlab" R2022b)
 
-find_package(Matlab REQUIRED)
+inlcude(FindMatlab)
+matlab_get_version_from_release_name(MATLAB_RELEASE MATLAB_VERSION)
+
+find_package(Matlab ${MATLAB_VERSION} REQUIRED COMPONENTS MEX_COMPILER)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(Boost REQUIRED)
 
 add_subdirectory(lrslib)
 
-option(BUILD_TESTS "Build tests" ON)
 add_subdirectory(MexUtilities)
 add_subdirectory(core)
 

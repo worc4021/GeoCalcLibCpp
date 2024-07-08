@@ -83,13 +83,11 @@ jobs:
         curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
         chmod +x mpm
         ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB --destination /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
-        ls -lAh /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |
         brew install libtool autoconf automake
-        export PATH=/Applications/MATLAB_${{ env.MATLAB_VERSION }}.app:$PATH
-        cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
+        cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF -DMATLAB_RELEASE=${{ env.MATLAB_VERSION }} --debug-find-var=Matlab_MEX_LIBRARY
       working-directory: ${{ github.workspace }}
     - name: Build
       run: |

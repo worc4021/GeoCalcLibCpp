@@ -82,20 +82,20 @@ jobs:
       run: |
         curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
         chmod +x mpm
-        ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
+        ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB --destination /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
         ls -lAh /Applications/MATLAB/${{ env.MATLAB_VERSION }}
       working-directory: ${{ runner.temp }}
-    # - name: Configure
-    #   run: |
-    #     brew install libtool autoconf automake
-    #     export PATH=/Applications/MATLAB/${{ env.MATLAB_VERSION }}/bin:$PATH
-    #     cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
-    #   working-directory: ${{ github.workspace }}
-    # - name: Build
-    #   run: |
-    #     cmake --build --preset macos-gcc-release-build --target install
-    #   working-directory: ${{ github.workspace }}
-    # - uses: actions/upload-artifact@v4
-    #   with:
-    #     name: macos
-    #     path: out/install/macos-gcc-release-config/mex/*mex*
+    - name: Configure
+      run: |
+        brew install libtool autoconf automake
+        export PATH=/Applications/MATLAB/${{ env.MATLAB_VERSION }}/bin:$PATH
+        cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
+      working-directory: ${{ github.workspace }}
+    - name: Build
+      run: |
+        cmake --build --preset macos-gcc-release-build --target install
+      working-directory: ${{ github.workspace }}
+    - uses: actions/upload-artifact@v4
+      with:
+        name: macos
+        path: out/install/macos-gcc-release-config/mex/*mex*

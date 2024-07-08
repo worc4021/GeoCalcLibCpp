@@ -11,60 +11,60 @@ env:
   MATLAB_VERSION: R2022b
 
 jobs:
-  windows:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - name: Setup up MSVC dev cmd
-      uses: ilammy/msvc-dev-cmd@v1
-    - name: Install Ninja
-      uses: seanmiddleditch/gha-setup-ninja@master
-    - name: Install Matlab
-      run: |
-        Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe
-        .\mpm.exe install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
-      working-directory: ${{ runner.temp }}
-    - name: Configure
-      run: |
-        cmake --preset windows-msvc-release-config
-      working-directory: ${{ github.workspace }}
-    - name: Build
-      run: |
-        cmake --build --preset windows-msvc-release-build --target install
-      working-directory: ${{ github.workspace }}
-    - uses: actions/upload-artifact@v4
-      with:
-        name: windows
-        path: out/install/windows-msvc-release-config/mex/*mex*
+  # windows:
+  #   runs-on: windows-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       submodules: true
+  #   - name: Setup up MSVC dev cmd
+  #     uses: ilammy/msvc-dev-cmd@v1
+  #   - name: Install Ninja
+  #     uses: seanmiddleditch/gha-setup-ninja@master
+  #   - name: Install Matlab
+  #     run: |
+  #       Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe
+  #       .\mpm.exe install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
+  #     working-directory: ${{ runner.temp }}
+  #   - name: Configure
+  #     run: |
+  #       cmake --preset windows-msvc-release-config
+  #     working-directory: ${{ github.workspace }}
+  #   - name: Build
+  #     run: |
+  #       cmake --build --preset windows-msvc-release-build --target install
+  #     working-directory: ${{ github.workspace }}
+  #   - uses: actions/upload-artifact@v4
+  #     with:
+  #       name: windows
+  #       path: out/install/windows-msvc-release-config/mex/*mex*
   
-  ubuntu:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        submodules: true
-    - uses: seanmiddleditch/gha-setup-ninja@master
-    - name: Install Matlab
-      run: |
-        wget https://www.mathworks.com/mpm/glnxa64/mpm
-        chmod +x mpm
-        ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
-      working-directory: ${{ runner.temp }}
-    - name: Configure
-      run: |
-        export PATH=/usr/share/matlab/bin:$PATH
-        cmake --preset linux-gcc-release-config -DBUILD_TESTS=OFF
-      working-directory: ${{ github.workspace }}
-    - name: Build
-      run: |
-        cmake --build --preset linux-gcc-release-build --target install
-      working-directory: ${{ github.workspace }}
-    - uses: actions/upload-artifact@v4
-      with:
-        name: linux
-        path: out/install/linux-gcc-release-config/mex/*mex*
+  # ubuntu:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #   - uses: actions/checkout@v4
+  #     with:
+  #       submodules: true
+  #   - uses: seanmiddleditch/gha-setup-ninja@master
+  #   - name: Install Matlab
+  #     run: |
+  #       wget https://www.mathworks.com/mpm/glnxa64/mpm
+  #       chmod +x mpm
+  #       ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
+  #     working-directory: ${{ runner.temp }}
+  #   - name: Configure
+  #     run: |
+  #       export PATH=/usr/share/matlab/bin:$PATH
+  #       cmake --preset linux-gcc-release-config -DBUILD_TESTS=OFF
+  #     working-directory: ${{ github.workspace }}
+  #   - name: Build
+  #     run: |
+  #       cmake --build --preset linux-gcc-release-build --target install
+  #     working-directory: ${{ github.workspace }}
+  #   - uses: actions/upload-artifact@v4
+  #     with:
+  #       name: linux
+  #       path: out/install/linux-gcc-release-config/mex/*mex*
 
   macos:
     runs-on: macos-latest
@@ -83,18 +83,19 @@ jobs:
         curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
         chmod +x mpm
         ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
+        ls -lAh /Applications/MATLAB/${{ env.MATLAB_VERSION }}
       working-directory: ${{ runner.temp }}
-    - name: Configure
-      run: |
-        brew install libtool autoconf automake
-        export PATH=/Applications/MATLAB/${{ env.MATLAB_VERSION }}/bin:$PATH
-        cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
-      working-directory: ${{ github.workspace }}
-    - name: Build
-      run: |
-        cmake --build --preset macos-gcc-release-build --target install
-      working-directory: ${{ github.workspace }}
-    - uses: actions/upload-artifact@v4
-      with:
-        name: macos
-        path: out/install/macos-gcc-release-config/mex/*mex*
+    # - name: Configure
+    #   run: |
+    #     brew install libtool autoconf automake
+    #     export PATH=/Applications/MATLAB/${{ env.MATLAB_VERSION }}/bin:$PATH
+    #     cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
+    #   working-directory: ${{ github.workspace }}
+    # - name: Build
+    #   run: |
+    #     cmake --build --preset macos-gcc-release-build --target install
+    #   working-directory: ${{ github.workspace }}
+    # - uses: actions/upload-artifact@v4
+    #   with:
+    #     name: macos
+    #     path: out/install/macos-gcc-release-config/mex/*mex*

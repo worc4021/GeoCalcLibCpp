@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 option(BUILD_TESTS "Build tests" ON)
 option(MATLAB_RELEASE "Release version of Matlab" R2022b)
 
-inlcude(FindMatlab)
+include(FindMatlab)
 matlab_get_version_from_release_name(MATLAB_RELEASE MATLAB_VERSION)
 
 find_package(Matlab ${MATLAB_VERSION} REQUIRED COMPONENTS MEX_COMPILER)

@@ -83,6 +83,8 @@ jobs:
         curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
         chmod +x mpm
         ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB --destination /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
+        ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
+        ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |

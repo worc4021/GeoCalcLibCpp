@@ -82,15 +82,19 @@ jobs:
       uses: jwlawson/actions-setup-cmake@v2
       with:
         cmake-version: latest
-    - name: Install Matlab
-      run: |
-        curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
-        chmod +x mpm
-        ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB --destination /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
-        ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
-        ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin
-        ln -s /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin/maca64 /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin/maci64
-      working-directory: ${{ runner.temp }}
+    # - name: Install Matlab
+    #   run: |
+    #     curl -L -o mpm https://www.mathworks.com/mpm/maca64/mpm
+    #     chmod +x mpm
+    #     ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB --destination /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
+    #     ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
+    #     ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin
+    #     ln -s /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin/maca64 /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin/maci64
+    #   working-directory: ${{ runner.temp }}
+    - name: Setup Matlab
+      uses: matlab-actions/setup-matlab@v2
+      with:
+        release: ${{ env.MATLAB_VERSION }}
     - name: Configure
       run: |
         brew install libtool autoconf automake

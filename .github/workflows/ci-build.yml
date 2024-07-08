@@ -89,6 +89,7 @@ jobs:
         ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB --destination /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
         ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app
         ls -lA /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin
+        ln -s /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin/maca64 /Applications/MATLAB_${{ env.MATLAB_VERSION }}.app/bin/maci64
       working-directory: ${{ runner.temp }}
     - name: Configure
       run: |

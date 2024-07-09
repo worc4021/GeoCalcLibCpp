@@ -21,11 +21,10 @@ jobs:
       uses: ilammy/msvc-dev-cmd@v1
     - name: Install Ninja
       uses: seanmiddleditch/gha-setup-ninja@master
-    - name: Install Matlab
-      run: |
-        Invoke-WebRequest -Uri https://www.mathworks.com/mpm/win64/mpm -OutFile mpm.exe
-        .\mpm.exe install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
-      working-directory: ${{ runner.temp }}
+    - name: Setup Matlab
+      uses: matlab-actions/setup-matlab@v2
+      with:
+        release: ${{ env.MATLAB_VERSION }}
     - name: Configure
       run: |
         cmake --preset windows-msvc-release-config
@@ -46,15 +45,12 @@ jobs:
       with:
         submodules: true
     - uses: seanmiddleditch/gha-setup-ninja@master
-    - name: Install Matlab
-      run: |
-        wget https://www.mathworks.com/mpm/glnxa64/mpm
-        chmod +x mpm
-        ./mpm install  --release ${{ env.MATLAB_VERSION }} --products MATLAB
-      working-directory: ${{ runner.temp }}
+    - name: Setup Matlab
+      uses: matlab-actions/setup-matlab@v2
+      with:
+        release: ${{ env.MATLAB_VERSION }}
     - name: Configure
       run: |
-        export PATH=/usr/share/matlab/bin:$PATH
         cmake --preset linux-gcc-release-config -DBUILD_TESTS=OFF
       working-directory: ${{ github.workspace }}
     - name: Build
@@ -84,7 +80,7 @@ jobs:
         release: ${{ env.MATLAB_VERSION }}
     - name: Configure
       run: |
-        brew install libtool autoconf automake
+        brew install automake
         cmake --preset macos-gcc-release-config -DBUILD_TESTS=OFF
       working-directory: ${{ github.workspace }}
     - name: Build

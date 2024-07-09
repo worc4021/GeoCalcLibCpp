@@ -3,8 +3,8 @@
     "configurePresets": [
         {
             "name": "config-base",
-            "generator": "Ninja",
             "hidden": true,
+            "generator": "Ninja",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
@@ -37,6 +37,15 @@
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Linux"
+            }
+        },
+        {
+            "name": "macos-config-base",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
             }
         },
         {
@@ -116,6 +125,22 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             }
+        },
+        {
+            "name": "windows-gcc-release-config",
+            "displayName": "windows GCC Release",
+            "inherits": ["linux-gcc-base","windows-conifg-base"],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "macos-gcc-release-config",
+            "displayName": "macos GCC Release",
+            "inherits": ["linux-gcc-base","macos-config-base"],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         }
     ],
     "buildPresets": [
@@ -135,6 +160,15 @@
                 "type": "equals",
                 "lhs": "${hostSystemName}",
                 "rhs": "Linux"
+            }
+        },
+        {
+            "name": "macos-build-base",
+            "hidden": true,
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Darwin"
             }
         },
         {
@@ -162,6 +196,12 @@
             "displayName": "MSVC Release"
         },
         {
+            "name": "windows-gcc-release-build",
+            "inherits": "windows-build-base",
+            "configurePreset": "windows-gcc-release-config",
+            "displayName": "windows GCC Release"
+        },
+        {
             "name": "linux-gcc-release-build",
             "inherits": "linux-build-base",
             "configurePreset": "linux-gcc-release-config",
@@ -172,6 +212,12 @@
             "inherits": "linux-build-base",
             "configurePreset": "linux-gcc-debug-config",
             "displayName": "linux GCC Debug"
+        },
+        {
+            "name": "macos-gcc-release-build",
+            "inherits": "macos-build-base",
+            "configurePreset": "macos-gcc-release-config",
+            "displayName": "macos GCC Release"
         }
     ],
     "testPresets": [

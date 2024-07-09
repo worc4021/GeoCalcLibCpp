@@ -3,18 +3,18 @@ cmake_minimum_required(VERSION 3.21)
 project(GeoCalcLib)
 
 set(CMAKE_CXX_STANDARD 20)
+option(BUILD_TESTS "Build tests" ON)
 
-find_package(Matlab REQUIRED)
+include(FindMatlab)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(Boost REQUIRED)
 
 add_subdirectory(lrslib)
 
-option(BUILD_TESTS "Build tests" ON)
 add_subdirectory(MexUtilities)
 add_subdirectory(core)
 
-
+include(GNUInstallDirs)
 
 matlab_add_mex(
     NAME facetEnumeration
@@ -54,3 +54,10 @@ if (BUILD_TESTS)
         ADDITIONAL_PATH $<TARGET_FILE_DIR:vertexEnumeration>
     )
 endif()
+
+set(MEX_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/mex" CACHE PATH "Installation directory for MEX files")
+install(TARGETS vertexEnumeration
+        DESTINATION ${MEX_INSTALL_DIR})
+
+install(TARGETS facetEnumeration
+        DESTINATION ${MEX_INSTALL_DIR})

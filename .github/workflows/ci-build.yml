@@ -41,7 +41,11 @@ jobs:
       with:
         name: windows
         path: out/install/windows-msvc-release-config/mex/*mex*
-  
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: out/install/windows-msvc-release-config/mex/*mex*
   ubuntu:
     runs-on: ubuntu-latest
     steps:
@@ -70,6 +74,11 @@ jobs:
       with:
         name: linux
         path: out/install/linux-gcc-release-config/mex/*mex*
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: out/install/linux-gcc-release-config/mex/*mex*
 
   maci:
     runs-on: macos-13
@@ -104,3 +113,8 @@ jobs:
       with:
         name: maci
         path: out/install/macos-gcc-release-config/mex/*mex*
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: out/install/macos-gcc-release-config/mex/*mex*

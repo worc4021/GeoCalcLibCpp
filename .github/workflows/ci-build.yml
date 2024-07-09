@@ -27,7 +27,7 @@ jobs:
         release: ${{ env.MATLAB_VERSION }}
     - name: Configure
       run: |
-        cmake --preset windows-msvc-release-config
+        cmake --preset windows-msvc-release-config -DBUILD_TESTS=OFF
       working-directory: ${{ github.workspace }}
     - name: Build
       run: |

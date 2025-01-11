@@ -111,6 +111,16 @@
             "hidden": true
         },
         {
+            "name": "linux-intel-base",
+            "inherits": "config-base",
+            "displayName": "linux Intel base",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "icx",
+                "CMAKE_CXX_COMPILER": "icpx"
+            },
+            "hidden": true
+        },
+        {
             "name": "linux-gcc-release-config",
             "displayName": "linux GCC Release",
             "inherits": ["linux-gcc-base","linux-conifg-base"],
@@ -122,6 +132,22 @@
             "name": "linux-gcc-debug-config",
             "displayName": "linux GCC Debug",
             "inherits": ["linux-gcc-base","linux-conifg-base"],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "linux-intel-release-config",
+            "displayName": "linux Intel Release",
+            "inherits": ["linux-intel-base","linux-conifg-base"],
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "RelWithDebInfo"
+            }
+        },
+        {
+            "name": "linux-intel-debug-config",
+            "displayName": "linux Intel Debug",
+            "inherits": ["linux-intel-base","linux-conifg-base"],
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Debug"
             }
@@ -212,6 +238,18 @@
             "inherits": "linux-build-base",
             "configurePreset": "linux-gcc-debug-config",
             "displayName": "linux GCC Debug"
+        },
+        {
+            "name": "linux-intel-release-build",
+            "inherits": "linux-build-base",
+            "configurePreset": "linux-intel-release-config",
+            "displayName": "linux Intel Release"
+        },
+        {
+            "name": "linux-intel-debug-build",
+            "inherits": "linux-build-base",
+            "configurePreset": "linux-intel-debug-config",
+            "displayName": "linux Intel Debug"
         },
         {
             "name": "macos-gcc-release-build",

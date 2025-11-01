@@ -4,17 +4,21 @@ project(GeoCalcLib)
 
 include(GNUInstallDirs)
 
-set(CMAKE_CXX_STANDARD 20)
 option(BUILD_TESTS "Build tests" ON)
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_C_STANDARD_REQUIRED YES)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-include(FindMatlab)
+# include(FindMatlab)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(Boost REQUIRED)
 
 add_subdirectory(lrslib)
 
-add_subdirectory(MexUtilities)
-add_subdirectory(core)
+# add_subdirectory(MexUtilities)
+# add_subdirectory(core)
 
 
 # matlab_add_mex(
